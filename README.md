@@ -81,7 +81,17 @@ We use a TimescaleDB Docker image which includes most required extensions (PostG
 > **Note:** For extensions like `pg_textsearch` and `pgai`, ensure your Postgres distribution supports them (e.g., Tiger Data, ParadeDB, or custom builds). The provided migration script handles enabling them.
 
 ```bash
-docker-compose up -d
+# 1. Tear down current container + volume
+docker compose down -v
+
+# 2. Build the custom image (this will take 5-10 mins — Rust compile)
+docker compose build
+
+# 3. Start it up
+docker compose up -d
+
+# 4. Once healthy, verify pgmq is there
+docker compose exec db psql -U postgres -d omnilogistics -c "SELECT extname, extversion FROM pg_extension ORDER BY extname;"
 ```
 
 ### 4. Run Migrations

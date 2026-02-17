@@ -1,0 +1,28 @@
+services:
+  db:
+    image: timescale/timescaledb-ha:pg16
+    container_name: omnilogistics_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: omnilogistics
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    command: >
+      postgres
+        -c shared_preload_libraries='timescaledb,pg_cron'
+        -c cron.database_name='omnilogistics'
+        -c timescaledb.telemetry_level=off
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d omnilogistics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+    driver: local

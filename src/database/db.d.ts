@@ -305,27 +305,29 @@ export interface _TimescaledbInternalHypertableChunkLocalSize {
   total_bytes: Int8 | null;
 }
 
-export interface AiFeatureFlag {
-  applied_at: Generated<Timestamp>;
-  applied_at_version: string;
-  name: string;
+export interface CronJob {
+  active: Generated<boolean>;
+  command: string;
+  database: Generated<string>;
+  jobid: Generated<Int8>;
+  jobname: string | null;
+  nodename: Generated<string>;
+  nodeport: Generated<number>;
+  schedule: string;
+  username: Generated<string>;
 }
 
-export interface AiMigration {
-  applied_at: Generated<Timestamp>;
-  applied_at_version: string;
-  body: string;
-  name: string;
-}
-
-export interface AiSecretPermissions {
-  name: string;
-  role: string;
-}
-
-export interface AiSecretPermissions2 {
-  name: string | null;
-  role: string | null;
+export interface CronJobRunDetails {
+  command: string | null;
+  database: string | null;
+  end_time: Timestamp | null;
+  job_pid: number | null;
+  jobid: Int8 | null;
+  return_message: string | null;
+  runid: Generated<Int8>;
+  start_time: Timestamp | null;
+  status: string | null;
+  username: string | null;
 }
 
 export interface Drivers {
@@ -382,12 +384,6 @@ export interface PgBuffercache {
   relforknumber: number | null;
   reltablespace: number | null;
   usagecount: number | null;
-}
-
-export interface PgBuffercacheNuma {
-  bufferid: number | null;
-  numa_node: number | null;
-  os_page_num: Int8 | null;
 }
 
 export interface RouteCache {
@@ -575,6 +571,7 @@ export interface TimescaledbInformationJobStats {
 
 export interface VehicleTelemetry {
   battery_level: number | null;
+  location: string | null;
   speed: number | null;
   temperature: number | null;
   time: Timestamp;
@@ -610,17 +607,14 @@ export interface DB {
   "_timescaledb_internal.bgw_policy_chunk_stats": _TimescaledbInternalBgwPolicyChunkStats;
   "_timescaledb_internal.compressed_chunk_stats": _TimescaledbInternalCompressedChunkStats;
   "_timescaledb_internal.hypertable_chunk_local_size": _TimescaledbInternalHypertableChunkLocalSize;
-  "ai._secret_permissions": AiSecretPermissions;
-  "ai.feature_flag": AiFeatureFlag;
-  "ai.migration": AiMigration;
-  "ai.secret_permissions": AiSecretPermissions2;
+  "cron.job": CronJob;
+  "cron.job_run_details": CronJobRunDetails;
   drivers: Drivers;
   geography_columns: GeographyColumns;
   geometry_columns: GeometryColumns;
   inventory: Inventory;
   orders_queue: OrdersQueue;
   pg_buffercache: PgBuffercache;
-  pg_buffercache_numa: PgBuffercacheNuma;
   route_cache: RouteCache;
   spatial_ref_sys: SpatialRefSys;
   "timescaledb_experimental.policies": TimescaledbExperimentalPolicies;
