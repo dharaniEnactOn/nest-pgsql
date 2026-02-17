@@ -1,98 +1,193 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# OmniLogistics 🚚
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**The All-Postgres Backend.** A production-grade NestJS API that replaces Elasticsearch, Pinecone, Kafka, Redis, InfluxDB, and MongoDB with a single PostgreSQL database using advanced extensions.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project is a reference implementation of the philosophy: **"It's 2026, Just Use Postgres."**
 
-## Description
+## 📖 The Philosophy
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Modern application architecture often suffers from **database sprawl**. We typically reach for a specialized tool for every problem:
+- Need search? → Elasticsearch
+- Need vectors? → Pinecone
+- Need time-series? → InfluxDB
+- Need queues? → Kafka
 
-## Project setup
+This leads to operational nightmares, especially in the AI era where agents need to spin up consistent test environments across all these systems.
 
-```bash
-$ npm install
-```
+**OmniLogistics proves you don't need 7 databases.** By leveraging PostgreSQL extensions, we consolidate search, vectors, time-series, queues, caching, and geospatial data into **one roof**.
 
-## Compile and run the project
+## 🛠 Tech Stack
 
-```bash
-# development
-$ npm run start
+| Component | Technology |
+| :--- | :--- |
+| **Runtime** | Node.js |
+| **Framework** | NestJS |
+| **Language** | TypeScript |
+| **Database** | PostgreSQL (16+) |
+| **ORM/Query Builder** | Kysely (Type-safe SQL) |
+| **API Docs** | Swagger (OpenAPI 3.0) |
+| **Infrastructure** | Docker & Docker Compose |
 
-# watch mode
-$ npm run start:dev
+## 🧩 Features & Extensions
 
-# production mode
-$ npm run start:prod
-```
+Every feature in this project is powered by a Postgres extension, replacing a specialized external service.
 
-## Run tests
+| Feature | Postgres Extension | Replaces |
+| :--- | :--- | :--- |
+| **Full-Text Search** | `pg_textsearch` (BM25) | Elasticsearch, Solr |
+| **Vector Search** | `pgvector` + `pgvectorscale` | Pinecone, Qdrant |
+| **AI Embeddings** | `pgai` | External Embedding Pipelines |
+| **Time-Series Data** | `TimescaleDB` | InfluxDB, Prometheus |
+| **Geospatial** | `PostGIS` | MongoDB Geo, specialized GIS |
+| **Message Queues** | `pgmq` | Kafka, RabbitMQ, SQS |
+| **Fuzzy Search** | `pg_trgm` | Algolia Typo Tolerance |
+| **Caching** | `UNLOGGED Tables` | Redis |
+| **Scheduled Jobs** | `pg_cron` | Cron, Airflow |
+| **Flexible Schema** | `JSONB` | MongoDB |
 
-```bash
-# unit tests
-$ npm run test
+## 🚀 Getting Started
 
-# e2e tests
-$ npm run test:e2e
+### Prerequisites
 
-# test coverage
-$ npm run test:cov
-```
+- Node.js (v18+)
+- Docker & Docker Compose
+- psql (optional, for debugging)
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 1. Clone the Repository
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+git clone https://github.com/your-username/omni-logistics.git
+cd omni-logistics
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. Configure Environment
 
-## Resources
+Create a `.env` file based on the example:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+cp .env.example .env
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**`.env`**
+```env
+DATABASE_URL=postgresql://postgres:password@localhost:5432/omnilogistics
+PORT=3000
+```
 
-## Support
+### 3. Start the Database
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+We use a TimescaleDB Docker image which includes most required extensions (PostGIS, pgvector, Timescale). 
 
-## Stay in touch
+> **Note:** For extensions like `pg_textsearch` and `pgai`, ensure your Postgres distribution supports them (e.g., Tiger Data, ParadeDB, or custom builds). The provided migration script handles enabling them.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+docker-compose up -d
+```
 
-## License
+### 4. Run Migrations
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Apply the schema, enable extensions, and create hypertables/queues.
+
+```bash
+# Connect to the DB
+docker-compose exec db psql -U postgres -d omnilogistics -f /docker-entrypoint-initdb.d/001_init_extensions.sql
+
+# Or if you mounted migrations locally:
+psql $DATABASE_URL -f migrations/001_init_extensions.sql
+```
+
+### 5. Install Dependencies & Run
+
+```bash
+npm install
+npm run start:dev
+```
+
+### 6. Explore the API
+
+Once running, the API will be available at `http://localhost:3000`.
+
+- **Swagger Documentation:** [http://localhost:3000/api](http://localhost:3000/api)
+- **Health Check:** `http://localhost:3000/health`
+
+## 📂 Project Structure
+
+```text
+src/
+├── database/          # Kysely setup & Postgres type definitions
+├── inventory/         # Search (BM25), Vectors, AI Embeddings
+├── telemetry/         # Time-series data (TimescaleDB)
+├── drivers/           # Geospatial queries (PostGIS)
+├── orders/            # Async processing (PGMQ)
+└── app.module.ts      # Main NestJS module
+```
+
+## 🔌 Key Implementation Details
+
+### 1. Hybrid Search (Inventory)
+We combine BM25 keyword search and Vector semantic search in a single SQL query. No need to merge results from Elasticsearch and Pinecone.
+
+```typescript
+// src/inventory/inventory.service.ts
+SELECT 
+  -(description <@> 'query') as bm25_score,
+  (embedding <=> '[vector]') as vector_dist
+FROM inventory
+ORDER BY hybrid_score DESC;
+```
+
+### 2. Auto-Embeddings (AI)
+Using `pgai`, embeddings are generated automatically via database triggers when new items are inserted. No external pipeline code required.
+
+```sql
+SELECT ai.create_vectorizer('inventory'::regclass, ...);
+```
+
+### 3. Time-Series Ingestion (Telemetry)
+Vehicle telemetry is stored in a TimescaleDB hypertable with automatic compression and retention policies.
+
+```typescript
+// src/telemetry/telemetry.service.ts
+SELECT time_bucket('1 hour', time), AVG(speed) 
+FROM vehicle_telemetry 
+GROUP BY hour;
+```
+
+### 4. Job Queues (Orders)
+Orders are pushed to `pgmq`. Workers poll the same database table to process jobs, ensuring ACID compliance between order creation and queueing.
+
+```typescript
+// src/orders/orders.service.ts
+SELECT pgmq.send('orders_queue', payload);
+```
+
+## 🧪 Testing the Extensions
+
+You can test the capabilities directly via Swagger:
+
+1.  **Create Inventory Item:** `POST /inventory`  
+    *Triggers `pgai` to generate embeddings automatically.*
+2.  **Search Items:** `GET /inventory/search?q=headphones`  
+    *Uses `pg_textsearch` (BM25) + `pgvector`.*
+3.  **Ingest Telemetry:** `POST /telemetry`  
+    *Writes to TimescaleDB hypertable.*
+4.  **Find Nearby Drivers:** `GET /drivers/nearby?lat=...&lon=...`  
+    *Uses `PostGIS` `ST_DWithin`.*
+5.  **Place Order:** `POST /orders`  
+    *Pushes message to `pgmq`.*
+
+## 🤝 Why This Matters
+
+-   **Simplicity:** One connection string. One backup strategy. One security model.
+-   **Consistency:** No data drift between search index and primary DB.
+-   **AI-Ready:** Agents can fork a single database for testing instead of coordinating 7 different services.
+-   **Cost:** Reduce infrastructure bills by eliminating managed services for search, vectors, and queues.
+
+## 📄 License
+
+MIT License - feel free to use this architecture in your own projects.
+
+---
+
+**Built with ❤️ using PostgreSQL.**  
+*Inspired by "It's 2026, Just Use Postgres".*
