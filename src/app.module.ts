@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { TelemetryModule } from './telemetry/telemetry.module';
+import { DriversModule } from './drivers/drivers.module';
 
 @Module({
-  imports: [DatabaseModule, InventoryModule, TelemetryModule],
+  imports: [DatabaseModule, InventoryModule, TelemetryModule, DriversModule],
   controllers: [AppController],
   providers: [AppService],
 })
