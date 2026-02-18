@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import type { DB } from './db.d';
+import { config } from '../config/config';  // ← import config
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
@@ -13,8 +14,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
     onModuleInit() {
         const pool = new Pool({
-            connectionString:
-                process.env.DATABASE_URL,
+            connectionString: config.databaseUrl,  // ← use config
             max: 20,
             idleTimeoutMillis: 30_000,
             connectionTimeoutMillis: 2_000,
