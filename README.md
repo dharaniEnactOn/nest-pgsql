@@ -164,11 +164,13 @@ GROUP BY hour;
 ```
 
 ### 4. Job Queues (Orders)
-Orders are pushed to `pgmq`. Workers poll the same database table to process jobs, ensuring ACID compliance between order creation and queueing.
+# API
+npm run start:dev
 
-```typescript
-// src/orders/orders.service.ts
-SELECT pgmq.send('orders_queue', payload);
+# RabbitMQ (if not already up)
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+http://localhost:15672/#/
 ```
 
 ## 🧪 Testing the Extensions

@@ -1,8 +1,7 @@
 import { Injectable, Inject, Logger, NotFoundException } from '@nestjs/common';
 import { Kysely, sql } from 'kysely';
 import * as amqplib from 'amqplib';
-import { DB } from '../database/types';
-import { DATABASE_TOKEN } from '../database/database.module';
+import { DatabaseService } from '../database/database.service';
 import { RABBITMQ_CONNECTION, ORDERS_QUEUE } from './rabbitmq.provider';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -26,9 +25,9 @@ export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
 
   constructor(
-    @Inject(DATABASE_TOKEN) private readonly db: Kysely<DB>,
+    private readonly database: DatabaseService,
     @Inject(RABBITMQ_CONNECTION) private readonly channel: amqplib.Channel | null,
-  ) {}
+  ) { }
 
   // ─────────────────────────────────────────────────────────────
   // CREATE — persist to DB then publish to RabbitMQ
@@ -46,7 +45,7 @@ export class OrdersService {
         ${JSON.stringify(dto.metadata ?? {})}::jsonb
       )
       RETURNING *
-    `.execute(this.db).then((r) => r.rows);
+    `.execute(this.database.db).then((r) => r.rows);
 
     // 2. Publish to RabbitMQ (fire-and-forget, non-blocking)
     const published = this.publishToQueue(order);
@@ -57,7 +56,7 @@ export class OrdersService {
         UPDATE orders SET status = 'queued', updated_at = NOW()
         WHERE id = ${order.id}
         RETURNING *
-      `.execute(this.db).then((r) => r.rows);
+      `.execute(this.database.db).then((r) => r.rows);
 
       this.logger.log(`Order #${order.id} → RabbitMQ "${ORDERS_QUEUE}" ✓`);
       return updated;
@@ -74,17 +73,17 @@ export class OrdersService {
     if (status) {
       return sql<Order>`
         SELECT * FROM orders WHERE status = ${status} ORDER BY created_at DESC
-      `.execute(this.db).then((r) => r.rows);
+      `.execute(this.database.db).then((r) => r.rows);
     }
     return sql<Order>`
       SELECT * FROM orders ORDER BY created_at DESC
-    `.execute(this.db).then((r) => r.rows);
+    `.execute(this.database.db).then((r) => r.rows);
   }
 
   async findOne(id: number): Promise<Order> {
     const [order] = await sql<Order>`
       SELECT * FROM orders WHERE id = ${id}
-    `.execute(this.db).then((r) => r.rows);
+    `.execute(this.database.db).then((r) => r.rows);
 
     if (!order) throw new NotFoundException(`Order #${id} not found`);
     return order;
@@ -112,7 +111,7 @@ export class OrdersService {
       UPDATE orders SET ${sql.raw(setClauses + `, updated_at = NOW()`)}
       WHERE id = ${id}
       RETURNING *
-    `.execute(this.db).then((r) => r.rows);
+    `.execute(this.database.db).then((r) => r.rows);
 
     return updated;
   }
@@ -126,7 +125,7 @@ export class OrdersService {
       UPDATE orders SET status = ${status}, updated_at = NOW()
       WHERE id = ${id}
       RETURNING *
-    `.execute(this.db).then((r) => r.rows);
+    `.execute(this.database.db).then((r) => r.rows);
     return updated;
   }
 
@@ -135,7 +134,7 @@ export class OrdersService {
   // ─────────────────────────────────────────────────────────────
   async remove(id: number): Promise<{ deleted: boolean }> {
     await this.findOne(id);
-    await sql`DELETE FROM orders WHERE id = ${id}`.execute(this.db);
+    await sql`DELETE FROM orders WHERE id = ${id}`.execute(this.database.db);
     return { deleted: true };
   }
 

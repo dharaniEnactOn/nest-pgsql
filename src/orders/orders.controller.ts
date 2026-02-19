@@ -18,7 +18,8 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
-import { OrdersService, OrderStatus } from './orders.service';
+import { OrdersService } from './orders.service';
+import type { OrderStatus } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 

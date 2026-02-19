@@ -188,6 +188,20 @@ Each message published to `orders_queue` is a persistent JSON buffer:
 ```
 
 Messages use `{ persistent: true }` so they survive broker restarts.
+docker stop rabbitmq
+
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": "customer-uuid-offline-test",
+    "driverId": "driver-uuid-001",
+    "inventoryId": "item-uuid-001",
+    "quantity": 1,
+    "metadata": { "note": "RabbitMQ was down when this was created" }
+  }'
+# → status: "pending"  (saved to DB, broker skipped)
+
+docker start rabbitmq
 
 ---
 
