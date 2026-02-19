@@ -171,7 +171,12 @@ npm run start:dev
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
 http://localhost:15672/#/
-```
+docker start rabbitmq
+docker stop rabbitmq
+
+Then restart your API and create an order — you should see `"status": "pending"` in the response and this in the logs:
+
+[OrdersService] Order #X saved to DB only (RabbitMQ unavailable)
 
 ## 🧪 Testing the Extensions
 
