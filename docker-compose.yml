@@ -23,6 +23,30 @@ services:
       timeout: 5s
       retries: 5
 
+  # ── Runs all migrations in order on every `docker compose up` ──
+  migrate:
+    image: timescale/timescaledb-ha:pg16
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations
+    entrypoint: >
+      bash -c "
+        echo '⏳ Waiting for database...';
+        until psql postgresql://postgres:password@db:5432/omnilogistics -c 'SELECT 1' > /dev/null 2>&1; do
+          echo '  still waiting...';
+          sleep 2;
+        done;
+        echo '✅ Database ready!';
+        for f in \$(ls /migrations/*.sql | sort); do
+          echo \"▶ Running \$$f...\";
+          psql postgresql://postgres:password@db:5432/omnilogistics -f \$$f;
+        done;
+        echo '🎉 All migrations complete.'
+      "
+    restart: "no"
+
 volumes:
   pgdata:
     driver: local

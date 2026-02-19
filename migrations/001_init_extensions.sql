@@ -254,7 +254,7 @@ DO $$ BEGIN
     PERFORM cron.schedule(
         'purge-route-cache',
         '0 * * * *',
-        $$DELETE FROM route_cache WHERE expires_at < NOW()$$
+        $sql$DELETE FROM route_cache WHERE expires_at < NOW()$sql$
     );
     RAISE NOTICE 'pg_cron job "purge-route-cache" scheduled ✓';
 EXCEPTION WHEN OTHERS THEN

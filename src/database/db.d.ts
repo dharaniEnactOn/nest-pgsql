@@ -366,12 +366,16 @@ export interface Inventory {
   name: string;
 }
 
-export interface OrdersQueue {
-  created_at: Generated<Timestamp | null>;
-  message: Json;
-  msg_id: Generated<Int8>;
-  processed: Generated<boolean | null>;
-  visibility_timeout: Timestamp | null;
+export interface Orders {
+  created_at: Generated<Timestamp>;
+  customer_id: string;
+  driver_id: string;
+  id: Generated<Int8>;
+  inventory_id: string;
+  metadata: Generated<Json>;
+  quantity: number;
+  status: Generated<string>;
+  updated_at: Generated<Timestamp>;
 }
 
 export interface PgBuffercache {
@@ -613,7 +617,7 @@ export interface DB {
   geography_columns: GeographyColumns;
   geometry_columns: GeometryColumns;
   inventory: Inventory;
-  orders_queue: OrdersQueue;
+  orders: Orders;
   pg_buffercache: PgBuffercache;
   route_cache: RouteCache;
   spatial_ref_sys: SpatialRefSys;
